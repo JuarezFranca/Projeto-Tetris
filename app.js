@@ -43,5 +43,23 @@ document.addEventListener('DOMContentLoaded', () => {
         [width, width + 1, width + 2, width + 3]
     ]
 
+    const theTetrominoes = [lTetromino, zTertromino, tTetromino, oTetromino, iTetromino]
+
+    let currentPosition = 4
+
+    //gerando tetrominos randomicos
+    let random = Math.floor(Math.random()*theTetrominoes.length)
+    console.log(random)
+    let current = theTetrominoes [random] [0]
+    
+
+    function draw(){
+        current.forEach(index => {
+            squares[currentPosition + index].classList.add('tetromino')
+        })
+    }
+
+    draw()
+
 })
     
