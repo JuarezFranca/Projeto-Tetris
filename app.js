@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
         [width + 1, width + 2, width * 2, width * 2 + 1]
     ]
 
-        const tTetromino = [
+    const tTetromino = [
         [1, width, width + 1, width + 2],
         [1, width + 1, width + 2, width * 2 + 1],
         [width, width + 1, width + 2, width * 2 + 1],
@@ -46,20 +46,38 @@ document.addEventListener('DOMContentLoaded', () => {
     const theTetrominoes = [lTetromino, zTertromino, tTetromino, oTetromino, iTetromino]
 
     let currentPosition = 4
+    let currentRotation = 0
 
     //gerando tetrominos randomicos
     let random = Math.floor(Math.random()*theTetrominoes.length)
-    console.log(random)
-    let current = theTetrominoes [random] [0]
+    let current = theTetrominoes [random] [currentRotation]
     
-
-    function draw(){
+    //desenhando tetrominos
+    function draw() {
         current.forEach(index => {
             squares[currentPosition + index].classList.add('tetromino')
         })
     }
+    
 
-    draw()
+    //apagando tetrominos
+    function undraw() {
+        current.forEach(index => {
+            squares[currentPosition + index].classList.remove('tetromino')
+        })    
+    }
+
+    //fazendo o tetromino cair a cada segundo
+    timeId = setInterval(moveDown, 1000)
+
+    
+    //function que movera os tetrominos para baixo
+    function moveDown() {
+        undraw()
+        currentPosition += width
+        draw()         
+    }
+
 
 })
     
