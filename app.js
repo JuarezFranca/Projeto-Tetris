@@ -70,13 +70,67 @@ document.addEventListener('DOMContentLoaded', () => {
     //fazendo o tetromino cair a cada segundo
     timeId = setInterval(moveDown, 1000)
 
-    
+    //atribuindo funções para as setas do teclado
+    function control(e) {
+        if(e.keyCode === 37) {
+            moveLeft()
+        } else if(e.keyCode ===38) {
+            //rotate()
+        } else if(e.keyCode === 39) {
+            moveRight()
+        } else if(e.keyCode === 40) {
+            moveDown()
+        }
+    }
+    document.addEventListener('keyup', control)
+
+
     //function que movera os tetrominos para baixo
     function moveDown() {
         undraw()
         currentPosition += width
-        draw()         
+        draw() 
+        freeze()        
     }
+
+    //freeze function
+    function freeze() {
+        if(current.some(index => squares[currentPosition + index + width].classList.contains('taken'))) {
+            current.forEach(index => squares[currentPosition + index].classList.add('taken'))
+            //start em um novo tetromino
+            random = Math.floor(Math.random()*theTetrominoes.length)
+            current = theTetrominoes[random][currentRotation]
+            currentPosition = 4
+            draw()
+        }
+    }
+
+    //movendo o tetromino pra esquerda e bloquendo quando chega no limite
+    function moveLeft() {
+        undraw()
+        const isAtleftEdge = current.some( index => (currentPosition + index) % width === 0)
+
+        if(!isAtleftEdge) currentPosition -=1
+
+        if(current.some(index => squares[currentPosition + index].classList.contains('taken'))) {
+        currentPosition +=1
+    }
+    draw()
+}
+    //movendo o tetromino pra direia e bloqueando quando chega ao limite
+
+    function moveRight() {
+        undraw()
+        const isAtrightEdge = current.some( index => (currentPosition + index) % width === width -1)
+
+        if(!isAtrightEdge) currentPosition +=1
+
+        if(current.some(index => squares[currentPosition + index].classList.contains('taken'))) {
+        currentPosition -=1
+    }
+    draw()
+}
+
 
 
 })
