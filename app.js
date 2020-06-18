@@ -1,9 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
     const grid = document.querySelector('.grid')
     let squares = Array.from(document.querySelectorAll('.grid div'))
-    const ScoreDisplay = document.querySelector('#score')
-    const StartBtn = document.querySelector('#Start-button')
+    const scoreDisplay = document.querySelector('#score')
+    const startBtn = document.querySelector('#start-button')
     const width =  10
+    let nextRandom = 0
+    let timerId 
   
     
     //the tetrominoes
@@ -68,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     //fazendo o tetromino cair a cada segundo
-    timeId = setInterval(moveDown, 1000)
+   // timerId = setInterval(moveDown, 1000)
 
     //atribuindo funções para as setas do teclado
     function control(e) {
@@ -98,10 +100,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if(current.some(index => squares[currentPosition + index + width].classList.contains('taken'))) {
             current.forEach(index => squares[currentPosition + index].classList.add('taken'))
             //start em um novo tetromino
-            random = Math.floor(Math.random()*theTetrominoes.length)
+            random = nextRandom
+            nextRandom = Math.floor(Math.random()*theTetrominoes.length)
             current = theTetrominoes[random][currentRotation]
             currentPosition = 4
             draw()
+            displayShape()
         }
     }
 
@@ -142,6 +146,45 @@ document.addEventListener('DOMContentLoaded', () => {
         draw()
     }
 
+    //mostrabdo a proxima peça no mini-grid
+    const displaySquares = document.querySelectorAll('.mini-grid div')
+    const displayWidth = 4
+    let displayIndex = 0
+    
+    
+    //criando tetrominos estatico para o mini-grid
+    const upNexttetromino = [
+        [1, displayWidth+1, displayWidth*2+1, 2], //ltetromino
+        [0, displayWidth, displayWidth+1, displayWidth*2+1], //ztetromino
+        [1, displayWidth, displayWidth+1,displayWidth+2], //ttetromino
+        [0, 1, displayWidth,displayWidth+1], //otetromino
+        [1, displayWidth+1, displayWidth*2+1, displayWidth*3+1] //itetromino
+    ]
+
+
+    //tetromino exibido no mini-grid
+    function displayShape(){
+        //remove traços do tetrominos no mini grid
+        displaySquares.forEach(square => {
+            square.classList.remove('tetromino')
+        })
+        upNexttetromino[nextRandom].forEach( index => {
+            displaySquares[displayIndex + index].classList.add('tetromino')
+        })
+    }
+
+    //adcionando o botão start/stop
+    startBtn.addEventListener ('click', () => {
+        if(timerId) {
+            clearInterval(timerId)
+            timerId = null
+        } else {
+            draw()
+            timerId = setInterval(moveDown, 1000)
+            nextRandom = Math.floor(Math.random()*theTetrominoes.length)
+        displayShape()
+        }
+    })
 
 
 })
