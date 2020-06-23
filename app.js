@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const startBtn = document.querySelector('#start-button')
     const width =  10
     let nextRandom = 0
-    let timerId 
+    let timerId = 0 
     let score = 0
   
     
@@ -102,13 +102,13 @@ document.addEventListener('DOMContentLoaded', () => {
             current.forEach(index => squares[currentPosition + index].classList.add('taken'))
             //start em um novo tetromino
             random = nextRandom
-            nextRandom = Math.floor(Math.random()*theTetrominoes.length)
+            nextRandom = Math.floor(Math.random() * theTetrominoes.length)
             current = theTetrominoes[random][currentRotation]
             currentPosition = 4
             draw()
             displayShape()
             addScore()
-
+            gameOver()
         }
     }
 
@@ -191,18 +191,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
     //add score
     function addScore() {
-        for(let i = 0; i < 199; i +=width) {
-            const row = [i, i + 1, i + 2, i + 3, i + 4, i + 5, i + 6, i + 7, i + 8, i + 9]
+        for (let i = 0; i < 199; i += width) {
+            const row = [i + 0, i + 1, i + 2, i + 3, i + 4, i + 5, i + 6, i + 7, i + 8, i + 9, i + 10]
 
             if(row.every(index => squares[index].classList.contains('taken'))) {
                 score += 10
                 scoreDisplay.innerHTML = score
                 row.forEach(index => {
                     squares[index].classList.remove('taken')
+                    squares[index].classList.remove('tetromino')
                 })
                 const squareRemoved = squares.splice(i, width)
-                console.log(squareRemoved)
+                squares = squareRemoved.concat(squares)
+                squares.forEach(cell => grid.appendChild(cell))
+             
             }
+        }
+    }
+
+    //game over function
+    function gameOver() {
+        if(current.some(index => squares[currentPosition + index].classList.contains('taken'))) {
+            scoreDisplay.innerHTML = "fim"
+            clearInterval(timerId)
         }
     }
 
